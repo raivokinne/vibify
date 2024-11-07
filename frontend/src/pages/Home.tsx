@@ -61,8 +61,17 @@ export default function HomePage() {
                 </svg>
               </button>
               <ul className="flex flex-col md:flex-row items-center md:space-x-8 text-lg text-gray-300 bg-gray-800 md:bg-transparent fixed inset-0 md:relative z-20 pt-20 md:pt-0 backdrop-blur-sm">
-                {["Feature", "Marketplace", "Company", "Features", "Contact"].map((item, index) => (
-                  <li key={index} className="hover:text-purple-400 cursor-pointer py-2 transition duration-150 ease-in-out transform hover:scale-110">
+                {[
+                  "Feature",
+                  "Marketplace",
+                  "Company",
+                  "Features",
+                  "Contact",
+                ].map((item, index) => (
+                  <li
+                    key={index}
+                    className="hover:text-purple-400 cursor-pointer py-2 transition duration-150 ease-in-out transform hover:scale-110"
+                  >
                     <a href="javascript: void(0)">{item}</a>
                   </li>
                 ))}
@@ -82,19 +91,27 @@ export default function HomePage() {
               Vibify - Mūsu mājas lapa
             </h1>
             <p className="text-2xl sm:text-3xl text-gray-300 max-w-3xl mx-auto mb-12">
-              Mūsu mērķis ir izveidot WEB App, kas ļauj lietotājiem ievadīt savu emocionālo stāvokli un saņemt personalizētu Play-Listi, kas atbilst viņu emocijām.
+              Mūsu mērķis ir izveidot WEB App, kas ļauj lietotājiem ievadīt savu
+              emocionālo stāvokli un saņemt personalizētu Play-Listi, kas
+              atbilst viņu emocijām.
             </p>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 px-4 sm:px-8 lg:px-16">
               <div className="bg-gray-700/30 backdrop-blur-md shadow-lg p-6 rounded-lg transition transform hover:scale-105 hover:bg-gray-700/40">
-                <h2 className="text-3xl font-semibold text-gray-200 mb-4">Mūsu Mērķis</h2>
+                <h2 className="text-3xl font-semibold text-gray-200 mb-4">
+                  Mūsu Mērķis
+                </h2>
                 <p className="text-gray-300">
-                  Mūsu mērķis ir izveidot lietotājiem draudzīgu aplikāciju, kas ļauj pielāgot mūziku viņu noskaņojumam.
+                  Mūsu mērķis ir izveidot lietotājiem draudzīgu aplikāciju, kas
+                  ļauj pielāgot mūziku viņu noskaņojumam.
                 </p>
               </div>
               <div className="bg-gray-700/30 backdrop-blur-md shadow-lg p-6 rounded-lg transition transform hover:scale-105 hover:bg-gray-700/40">
-                <h2 className="text-3xl font-semibold text-gray-200 mb-4">Funkcionalitāte</h2>
+                <h2 className="text-3xl font-semibold text-gray-200 mb-4">
+                  Funkcionalitāte
+                </h2>
                 <p className="text-gray-300">
-                  Lietotājs ievada savu emocionālo stāvokli, un aplikācija ģenerē atbilstošu Play-Listi, pieejamu uz dažādām platformām.
+                  Lietotājs ievada savu emocionālo stāvokli, un aplikācija
+                  ģenerē atbilstošu Play-Listi, pieejamu uz dažādām platformām.
                 </p>
               </div>
             </div>
