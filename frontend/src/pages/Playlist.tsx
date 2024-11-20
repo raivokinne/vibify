@@ -182,10 +182,10 @@ export default function Playlist() {
 											<PauseIcon className="mr-2" /> Pause
 										</Button>
 									) : (
-											<Button onClick={resumeTrack}>
-												<PlayIcon className="mr-2" /> Resume
-											</Button>
-										)}
+										<Button onClick={resumeTrack}>
+											<PlayIcon className="mr-2" /> Resume
+										</Button>
+									)}
 								</div>
 							</div>
 						)}
@@ -205,19 +205,15 @@ export default function Playlist() {
 										<Button
 											variant="outline"
 											onClick={() => playTrack(track.preview_url, track)}
-											className={`${currentTrack === track && isPlaying ? 'bg-destructive text-destructive-foreground' : ''}`}
 										>
-											{isPlaying && currentTrack === track ?
-												<PauseIcon className="mr-2" /> :
-												<PlayIcon className="mr-2" />
-											}
-											{isPlaying && currentTrack === track ? "Pause" : "Play"}
+											<PlayIcon className="mr-2" />
+											<p>Play</p>
 										</Button>
 									</div>
 								))
 							) : (
-									<p className="text-muted-foreground">Loading album tracks...</p>
-								)}
+								<p className="text-muted-foreground">Loading album tracks...</p>
+							)}
 						</div>
 
 					</CardContent>
