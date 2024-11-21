@@ -25,7 +25,7 @@ export default function Playlist() {
 	useEffect(() => {
 		const fetchAlbumTracks = async () => {
 			const accessToken = await getSpotifyAccessToken();
-			if (!accessToken) return [];
+			if (!accessToken) return;
 
 			const url = `https://api.spotify.com/v1/albums/${albumId}/tracks`;
 
@@ -39,8 +39,7 @@ export default function Playlist() {
 				const data = await response.json();
 				setAlbumTracks(data.items);
 			} catch (err) {
-				console.error('Error fetching album tracks:', err);
-				setAlbumTracks([]);
+				console.error("Error fetching album tracks:", err);
 			}
 		};
 
@@ -48,39 +47,28 @@ export default function Playlist() {
 	}, [albumId]);
 
 	const getSpotifyAccessToken = async () => {
-		const clientId = '325d5315e18f43babf07b10821909d17';
-		const clientSecret = 'fd823945d8a04cd7b0bbf1e22570e8b5';
-
-		const authHeader = {
-			headers: {
-				'Authorization': 'Basic ' + btoa(`${clientId}:${clientSecret}`),
-				'Content-Type': 'application/x-www-form-urlencoded',
-			},
-		};
-
-		const data = new URLSearchParams({
-			grant_type: 'client_credentials',
-		});
+		const clientId = "325d5315e18f43babf07b10821909d17";
+		const clientSecret = "fd823945d8a04cd7b0bbf1e22570e8b5";
 
 		try {
-			const response = await fetch('https://accounts.spotify.com/api/token', {
-				method: 'POST',
-				headers: authHeader.headers,
-				body: data,
+			const response = await fetch("https://accounts.spotify.com/api/token", {
+				method: "POST",
+				headers: {
+					Authorization: "Basic " + btoa(`${clientId}:${clientSecret}`),
+					"Content-Type": "application/x-www-form-urlencoded",
+				},
+				body: new URLSearchParams({ grant_type: "client_credentials" }),
 			});
-
 			const result = await response.json();
 			return result.access_token;
 		} catch (err) {
-			console.error('Error getting access token:', err);
+			console.error("Error getting access token:", err);
 			return null;
 		}
 	};
 
 	const playTrack = (trackUrl: string, track: Track) => {
-		if (audioPlayer) {
-			audioPlayer.pause();
-		}
+		if (audioPlayer) audioPlayer.pause();
 
 		const player = new Audio(trackUrl);
 		setAudioPlayer(player);
@@ -88,7 +76,6 @@ export default function Playlist() {
 		player.volume = volume[0];
 		player.play();
 		setIsPlaying(true);
-		setDuration(player.duration || 0);
 
 		player.ontimeupdate = () => {
 			setProgress([(player.currentTime / player.duration) * 100]);
@@ -101,40 +88,29 @@ export default function Playlist() {
 	};
 
 	const pauseTrack = () => {
-		if (audioPlayer) {
-			audioPlayer.pause();
-			setIsPlaying(false);
-		}
+		audioPlayer?.pause();
+		setIsPlaying(false);
 	};
 
 	const resumeTrack = () => {
-		if (audioPlayer) {
-			audioPlayer.play();
-			setIsPlaying(true);
-		}
+		audioPlayer?.play();
+		setIsPlaying(true);
 	};
 
 	const handleVolumeChange = (newVolume: number[]) => {
 		setVolume(newVolume);
-		if (audioPlayer) {
-			audioPlayer.volume = newVolume[0];
-		}
+		if (audioPlayer) audioPlayer.volume = newVolume[0];
 	};
 
 	const handleProgressChange = (newProgress: number[]) => {
-		if (audioPlayer) {
-			const newTime = (newProgress[0] / 100) * audioPlayer.duration;
-			audioPlayer.currentTime = newTime;
-		}
+		if (audioPlayer) audioPlayer.currentTime = (newProgress[0] / 100) * audioPlayer.duration;
 	};
 
 	const formatTime = (seconds: number) => {
-		if (isNaN(seconds) || seconds === Infinity) {
-			return '0:00';
-		}
+		if (isNaN(seconds)) return "0:00";
 		const minutes = Math.floor(seconds / 60);
 		const secs = Math.floor(seconds % 60);
-		return `${minutes}:${secs < 10 ? '0' + secs : secs}`;
+		return `${minutes}:${secs < 10 ? "0" : ""}${secs}`;
 	};
 
 	return (
@@ -143,82 +119,71 @@ export default function Playlist() {
 			<div className="container mx-auto px-4 py-8 mt-20">
 				<Card>
 					<CardHeader>
-						<CardTitle className="text-3xl font-bold">Playlist</CardTitle>
+						<CardTitle className="text-3xl font-bold">Your Playlist</CardTitle>
 					</CardHeader>
 					<CardContent>
-						{currentTrack && (
-							<div className="mt-8 space-y-4 mb-6">
-								<div>
-									<label className="block text-sm font-medium text-muted-foreground mb-2">
-										Volume
-									</label>
-									<Slider
-										value={volume}
-										onValueChange={handleVolumeChange}
-										max={1}
-										step={0.01}
-									/>
-								</div>
+						<div className="flex flex-col gap-6">
+							{currentTrack && (
+								<div className="p-6 bg-secondary rounded-lg shadow">
+									<h2 className="text-xl font-semibold">{currentTrack.name}</h2>
+									<p className="text-sm text-muted-foreground">
+										{currentTrack.artists[0]?.name}
+									</p>
 
-								<div>
-									<label className="block text-sm font-medium text-muted-foreground mb-2">
-										Progress
-									</label>
-									<div className="flex items-center space-x-4">
+									<div className="mt-4">
 										<Slider
-											value={progress}
-											onValueChange={handleProgressChange}
-											max={100}
+											value={volume}
+											onValueChange={handleVolumeChange}
+											max={1}
+											step={0.01}
 										/>
-										<div className="text-sm text-muted-foreground">
-											{formatTime(audioPlayer?.currentTime || 0)} / {formatTime(duration)}
+									</div>
+
+									<div className="flex items-center justify-between mt-4">
+										{isPlaying ? (
+											<Button onClick={pauseTrack} variant="destructive">
+												<PauseIcon className="mr-2" /> Pause
+											</Button>
+										) : (
+											<Button onClick={resumeTrack}>
+												<PlayIcon className="mr-2" /> Resume
+											</Button>
+										)}
+										<div>
+											<span>
+												{formatTime(audioPlayer?.currentTime || 0)} /{" "}
+												{formatTime(duration)}
+											</span>
 										</div>
 									</div>
 								</div>
+							)}
 
-								<div className="flex justify-center">
-									{isPlaying ? (
-										<Button onClick={pauseTrack} variant="destructive">
-											<PauseIcon className="mr-2" /> Pause
-										</Button>
-									) : (
-										<Button onClick={resumeTrack}>
-											<PlayIcon className="mr-2" /> Resume
-										</Button>
-									)}
-								</div>
-							</div>
-						)}
-						<div className="space-y-4">
-							{albumTracks.length > 0 ? (
-								albumTracks.map((track, index) => (
+							<div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+								{albumTracks.map((track, index) => (
 									<div
 										key={index}
-										className="flex items-center justify-between border rounded-lg p-4 hover:bg-accent transition-colors"
+										className="p-4 border rounded-lg shadow-sm hover:shadow-md hover:bg-accent transition"
 									>
-										<div>
-											<h3 className="text-lg font-semibold">{track.name}</h3>
-											<p className="text-muted-foreground">
-												{track.artists[0].name}
-											</p>
-										</div>
+										<h3 className="text-lg font-bold">{track.name}</h3>
+										<p className="text-sm text-muted-foreground">
+											{track.artists[0]?.name}
+										</p>
 										<Button
-											variant="outline"
+											variant="secondary"
 											onClick={() => playTrack(track.preview_url, track)}
+											className="mt-2"
 										>
-											<PlayIcon className="mr-2" />
-											<p>Play</p>
+											<PlayIcon className="mr-2" /> Play
 										</Button>
 									</div>
-								))
-							) : (
-								<p className="text-muted-foreground">Loading album tracks...</p>
-							)}
+								))}
+							</div>
 						</div>
-
 					</CardContent>
 				</Card>
 			</div>
 		</div>
 	);
 }
+
