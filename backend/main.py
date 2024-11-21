@@ -37,7 +37,7 @@ class User(Base):
     __tablename__ = 'users'
     id = Column(Integer, primary_key=True, autoincrement=True)
     name = Column(VARCHAR(255), nullable=False)
-    email = Column(Text, nullable=False, unique=True)
+    email = Column(VARCHAR(255), nullable=False, unique=True)
     passwordHash = Column(Text, nullable=False)
 
 DB_USER = os.getenv("DB_USER")
