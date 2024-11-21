@@ -103,7 +103,11 @@ export default function Playlist() {
 	};
 
 	const handleProgressChange = (newProgress: number[]) => {
-		if (audioPlayer) audioPlayer.currentTime = (newProgress[0] / 100) * audioPlayer.duration;
+		if (audioPlayer) {
+			const newTime = (newProgress[0] / 100) * audioPlayer.duration;
+			audioPlayer.currentTime = newTime;
+			setProgress([newProgress[0]]);
+		}
 	};
 
 	const formatTime = (seconds: number) => {
@@ -130,13 +134,20 @@ export default function Playlist() {
 										{currentTrack.artists[0]?.name}
 									</p>
 
-									<div className="mt-4">
+									<div className="flex items-center justify-between mt-4">
 										<Slider
-											value={volume}
-											onValueChange={handleVolumeChange}
-											max={1}
-											step={0.01}
+											value={progress}
+											onValueChange={handleProgressChange}
+											max={100}
+											step={0.1}
+											className="flex-1 mr-4"
 										/>
+										<div>
+											<span>
+												{formatTime(audioPlayer?.currentTime || 0)} /{" "}
+												{formatTime(audioPlayer?.duration || 0)}
+											</span>
+										</div>
 									</div>
 
 									<div className="flex items-center justify-between mt-4">
@@ -150,10 +161,7 @@ export default function Playlist() {
 											</Button>
 										)}
 										<div>
-											<span>
-												{formatTime(audioPlayer?.currentTime || 0)} /{" "}
-												{formatTime(duration)}
-											</span>
+		
 										</div>
 									</div>
 								</div>
