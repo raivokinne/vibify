@@ -105,6 +105,12 @@ def login_user():
         return jsonify({"message": "Login successful"}), 200
     finally:
         conn.close()
+@app.route("/api/logout", methods=["POST"])  # mainīt /auth/logout uz /api/logout
+def logout_user():
+    # Pārtraukt sesiju
+    session.clear()  # Dzēš visus sesijas datus
+
+    return jsonify({"message": "Logout successful"}), 200
 
 @app.get('/api/emotions')
 def get_results():
@@ -114,9 +120,23 @@ def get_results():
 
     conn = DBSession()
     try:
+        # Iegūstam lietotāja informāciju, lai atgrieztu to kopā ar emocijām
+        user = conn.query(User).filter_by(id=user_id).first()
+        if not user:
+            return jsonify({'error': 'User not found'}), 404
+
+        # Iegūstam rezultātus (emocijas)
         results = conn.query(Result).filter_by(userId=user_id).all()
 
-        return jsonify({'emotions': [{'emotion': result.emotion} for result in results]}), 200
+        # Atgriežam emocijas un lietotāja informāciju
+        return jsonify({
+            'user': {
+                'id': user.id,
+                'name': user.name,
+                'email': user.email
+            },
+            'emotions': [{'emotion': result.emotion} for result in results]
+        }), 200
     finally:
         conn.close()
 

@@ -7,6 +7,7 @@ import Upload from "./pages/Upload";
 import Playlist from "./pages/Playlist";
 import Playlists from "./pages/Playlists";
 
+
 const router = createBrowserRouter([
   {
     path: "/",
@@ -32,6 +33,7 @@ const router = createBrowserRouter([
     path: "/signup",
     element: <Signup />,
   },
+
 ]);
 
 export default router;
